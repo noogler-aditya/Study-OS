@@ -1,0 +1,23 @@
+[package]
+name = "study-os"
+version = "0.1.0"
+description = "Offline-first Study OS for GATE preparation"
+authors = ["Study OS"]
+edition = "2021"
+
+[lib]
+name = "study_os_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+dirs = "5"

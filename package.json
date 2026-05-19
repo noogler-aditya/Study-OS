@@ -1,0 +1,59 @@
+{
+  "name": "study-os",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "desktop": "npm run build && electron .",
+    "desktop:dev": "concurrently -k \"npm run dev\" \"wait-on http://127.0.0.1:1420 && STUDY_OS_DEV=true electron .\"",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
+    "concurrently": "^9.2.1",
+    "electron": "^42.1.0",
+    "electron-builder": "^26.8.1",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^4.3.0",
+    "vitest": "^2.1.8",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.studyos.gate",
+    "productName": "Study OS",
+    "mac": {
+      "category": "public.app-category.education",
+      "target": [
+        "dmg",
+        "dir"
+      ]
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    }
+  }
+}
