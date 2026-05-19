@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, CalendarDays, CheckCircle, Database, FlaskConical, Gauge, Library, Loader2, RotateCcw, Settings, XCircle } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, CheckCircle, FlaskConical, Gauge, Library, Loader2, RotateCcw, Settings, XCircle } from "lucide-react";
 import type React from "react";
 import { useStudyStore } from "../stores/studyStore";
 
@@ -41,12 +41,8 @@ export function AppShell({ children }: AppShellProps) {
             );
           })}
         </nav>
-        <div className="sidebar-footer">
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <Database size={16} />
-            <SaveStatusIndicator status={saveStatus} error={saveError} />
-          </div>
-          <p>Offline-first local workspace. Data stored in app data directory.</p>
+        <div style={{ marginTop: "auto", padding: "12px 10px" }}>
+          <SaveStatusIndicator status={saveStatus} error={saveError} />
         </div>
       </aside>
       <main className="main">

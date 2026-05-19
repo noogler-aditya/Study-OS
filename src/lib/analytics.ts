@@ -14,7 +14,9 @@ export function revisionHealth(topics: Topic[], referenceIso = todayIso()): numb
 }
 
 export function weakTopics(topics: Topic[]): Topic[] {
-  return topics.filter((topic) => topic.status === "weak" || topic.forgotten || topic.confidence === "low").slice(0, 8);
+  return topics
+    .filter((topic) => topic.status === "weak" || (topic.forgotten && topic.studiedOn))
+    .slice(0, 8);
 }
 
 export function mockTrend(mockTests: MockTest[]): number {

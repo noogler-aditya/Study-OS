@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock3, Flame, TimerReset } from "lucide-react";
+import { CalendarClock, CheckCircle2, Clock3, Flame } from "lucide-react";
 import { useMemo } from "react";
 import { completionPercent, dailyStreak, weakTopics } from "../lib/analytics";
 import { formatShortDate, todayIso } from "../lib/date";
@@ -17,7 +17,7 @@ export function Dashboard() {
       dueRevisions: dueRevisionTopics(topics, today),
       weakTopics: weakTopics(topics),
       todayBlocks: studyBlocks.filter((block) => block.date === today).sort((a, b) => a.start.localeCompare(b.start)),
-      upcomingMocks: studyBlocks.filter((block) => block.type === "mock" && block.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3),
+      upcomingBlocks: studyBlocks.filter((block) => block.date > today && !block.completed).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 5),
       streakDays: dailyStreak(studyBlocks, today)
     };
   }, [studyBlocks, topics]);
@@ -35,7 +35,7 @@ export function Dashboard() {
         <section className="panel metric">
           <span>Due revisions</span>
           <strong>{dashboard.dueRevisions.length}</strong>
-          <span>Sorted by oldest next revision date</span>
+          <span>Topics needing revision today</span>
         </section>
         <section className="panel metric">
           <span>Execution streak</span>
@@ -47,17 +47,19 @@ export function Dashboard() {
       <div className="grid two">
         <section className="panel">
           <div className="panel-header">
-            <h3>Today’s Study Blocks</h3>
+            <h3>Today's Study Blocks</h3>
             <Clock3 size={18} />
           </div>
           <div className="list">
-            {dashboard.todayBlocks.map((block) => (
+            {dashboard.todayBlocks.length === 0 ? (
+              <div className="empty">No blocks scheduled for today.</div>
+            ) : dashboard.todayBlocks.map((block) => (
               <div className="row" key={block.id}>
                 <div className="row-title">
-                  <span className="dot" />
+                  <span className="dot" style={{ background: subjects.find((s) => s.id === block.subjectId)?.color }} />
                   <div>
                     <strong>{block.title}</strong>
-                    <div className="muted">{block.start}-{block.end} · {subjectName(block.subjectId)} · {block.energy}</div>
+                    <div className="muted">{block.start}–{block.end} · {subjectName(block.subjectId)} · {block.type}</div>
                   </div>
                 </div>
                 <button className={block.completed ? "primary-button" : "ghost-button"} onClick={() => toggleStudyBlock(block.id)}>
@@ -74,7 +76,9 @@ export function Dashboard() {
             <Flame size={18} />
           </div>
           <div className="list">
-            {dashboard.weakTopics.map((topic) => (
+            {dashboard.weakTopics.length === 0 ? (
+              <div className="empty">No weak topics. Keep studying!</div>
+            ) : dashboard.weakTopics.map((topic) => (
               <div className="row" key={topic.id}>
                 <div className="row-title">
                   <span className="dot" style={{ background: subjects.find((subject) => subject.id === topic.subjectId)?.color }} />
@@ -90,44 +94,26 @@ export function Dashboard() {
         </section>
       </div>
 
-      <div className="grid two">
-        <section className="panel">
-          <div className="panel-header">
-            <h3>Revision Queue</h3>
-            <TimerReset size={18} />
-          </div>
-          <div className="list">
-            {dashboard.dueRevisions.slice(0, 6).map((topic) => (
-              <div className="row" key={topic.id}>
-                <div className="row-title">
-                  <span className="dot" style={{ background: subjects.find((subject) => subject.id === topic.subjectId)?.color }} />
-                  <div>
-                    <strong>Revise {topic.name} #{topic.revisionCount + 1}</strong>
-                    <div className="muted">Due {formatShortDate(topic.nextRevisionOn)} · {subjectName(topic.subjectId)}</div>
-                  </div>
-                </div>
-                <span className="pill">{topic.confidence}</span>
+      <section className="panel">
+        <div className="panel-header">
+          <h3>Upcoming Blocks</h3>
+          <CalendarClock size={18} />
+        </div>
+        <div className="list">
+          {dashboard.upcomingBlocks.length === 0 ? (
+            <div className="empty">No upcoming blocks scheduled.</div>
+          ) : dashboard.upcomingBlocks.map((block) => (
+            <div className="row" key={block.id}>
+              <div>
+                <strong>{block.title}</strong>
+                <div className="muted">{formatShortDate(block.date)} · {block.start}–{block.end} · {block.type}</div>
               </div>
-            ))}
-          </div>
-        </section>
-        <section className="panel">
-          <div className="panel-header">
-            <h3>Upcoming Mocks</h3>
-          </div>
-          <div className="list">
-            {dashboard.upcomingMocks.map((mock) => (
-              <div className="row" key={mock.id}>
-                <div>
-                  <strong>{mock.title}</strong>
-                  <div className="muted">{formatShortDate(mock.date)} · {mock.start}-{mock.end}</div>
-                </div>
-                <span className="pill good">Planned</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+              <span className="pill">{block.type}</span>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
+

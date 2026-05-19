@@ -19,6 +19,7 @@ interface StudyStore extends StudyOsData {
   startTopic: (topicId: string, confidence?: Confidence) => void;
   completeRevision: (topicId: string, confidence: Confidence, forgotten: boolean) => void;
   upsertStudyBlock: (block: StudyBlock) => void;
+  updateStudyBlock: (blockId: string, patch: Partial<StudyBlock>) => void;
   toggleStudyBlock: (blockId: string) => void;
   deleteStudyBlock: (blockId: string) => void;
   addMockTest: (mock: MockTest) => void;
@@ -107,19 +108,23 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   startTopic: (topicId, confidence = "medium") => {
     const state = get();
     const today = todayIso();
+    const topic = state.topics.find((t) => t.id === topicId);
+    if (!topic) return;
+
+    const revisionDate = nextRevisionDate(today, confidence, topic.revisionCount);
     const next = {
       ...state,
-      topics: state.topics.map((topic) =>
-        topic.id === topicId
+      topics: state.topics.map((t) =>
+        t.id === topicId
           ? {
-              ...topic,
+              ...t,
               status: "learning" as TopicStatus,
               confidence,
               studiedOn: today,
-              nextRevisionOn: nextRevisionDate(today, confidence, topic.revisionCount),
-              mastery: Math.max(topic.mastery, 18)
+              nextRevisionOn: revisionDate,
+              mastery: Math.max(t.mastery, 18)
             }
-          : topic
+          : t
       )
     };
     set(next);
@@ -128,9 +133,15 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
 
   completeRevision: (topicId, confidence, forgotten) => {
     const state = get();
+    const updatedTopic = completeRevisionTopic(
+      state.topics.find((t) => t.id === topicId)!,
+      confidence,
+      todayIso(),
+      forgotten
+    );
     const next = {
       ...state,
-      topics: state.topics.map((topic) => (topic.id === topicId ? completeRevisionTopic(topic, confidence, todayIso(), forgotten) : topic))
+      topics: state.topics.map((t) => (t.id === topicId ? updatedTopic : t))
     };
     set(next);
     void persist(next as StudyStore, set);
@@ -140,6 +151,13 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
     const state = get();
     const exists = state.studyBlocks.some((item) => item.id === block.id);
     const next = { ...state, studyBlocks: exists ? state.studyBlocks.map((item) => (item.id === block.id ? block : item)) : [block, ...state.studyBlocks] };
+    set(next);
+    void persist(next as StudyStore, set);
+  },
+
+  updateStudyBlock: (blockId, patch) => {
+    const state = get();
+    const next = { ...state, studyBlocks: state.studyBlocks.map((block) => (block.id === blockId ? { ...block, ...patch } : block)) };
     set(next);
     void persist(next as StudyStore, set);
   },
