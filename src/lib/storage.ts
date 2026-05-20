@@ -11,7 +11,7 @@ import type { StudyOsData } from "../types";
  * localStorage as a convenience but a warning is logged.
  */
 
-const DEV_STORAGE_KEY = "study-os:v5:dev";
+const DEV_STORAGE_KEY = "study-os:v6:dev";
 
 function isElectron(): boolean {
   return Boolean(window.studyOsDesktop);

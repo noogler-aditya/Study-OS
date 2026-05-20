@@ -19,9 +19,9 @@ const subjectSpecs = [
     color: "#5b7cfa",
     targetWeight: 7, // Grouped with Discrete for 13
     chapters: [
-      ["Linear Algebra", ["Matrices", "Eigenvalues and eigenvectors", "Systems of linear equations"]],
-      ["Calculus", ["Limits and continuity", "Differentiability", "Maxima and minima"]],
-      ["Probability", ["Random variables", "Distributions", "Bayes theorem"]]
+      ["Linear Algebra", ["Matrices", "Determinants", "System of Linear Equations", "Eigenvalues and Eigenvectors", "LU Decomposition"]],
+      ["Calculus", ["Limits, Continuity and Differentiability", "Maxima and Minima", "Mean Value Theorem", "Integration"]],
+      ["Probability and Statistics", ["Random Variables", "Uniform, Normal, Exponential, Poisson and Binomial Distributions", "Mean, Median, Mode and Standard Deviation", "Conditional Probability and Bayes Theorem"]]
     ]
   },
   {
@@ -30,9 +30,11 @@ const subjectSpecs = [
     color: "#4f46e5",
     targetWeight: 6, // Grouped with Eng Math for 13
     chapters: [
-      ["Logic", ["Propositional Logic", "First Order Logic"]],
-      ["Combinatorics", ["Permutations", "Combinations", "Pigeon-hole principle"]],
-      ["Graph Theory", ["Connectivity", "Matching", "Coloring"]]
+      ["Propositional and First-Order Logic", ["Propositional Logic", "Knowledge Representation in First-Order Logic", "Propositional Equivalences", "Predicates and Quantifiers", "Rules of Inference"]],
+      ["Sets, Relations & Functions", ["Set Theory", "Relation and Function", "Recurrence Relations", "Closure of Relations and Warshall's Algorithm", "Representation of Relation in Graphs and Matrices"]],
+      ["Partial Order and Lattices", ["Partial Orders and Lattices", "Partial Orders and Lattices (Set-2)", "Elements of POSET", "Hasse Diagrams", "Groups and Monoids"]],
+      ["Graphs", ["Graph Theory", "Matching and Coloring", "K-connected Graph and Biconnected Graph"]],
+      ["Combinatorics", ["Principle of Counting", "Principle of Inclusion and Exclusion", "Pigeonhole Principle", "Permutations and Combinations", "Recurrence Relations", "Generating Functions"]]
     ]
   },
   {
