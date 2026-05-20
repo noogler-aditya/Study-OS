@@ -2,10 +2,22 @@ import type { Chapter, StudyOsData, Subject, Topic } from "../types";
 
 const subjectSpecs = [
   {
-    id: "sub-engineering-math",
+    id: "sub-aptitude",
+    name: "General Aptitude",
+    color: "#6b7280",
+    targetWeight: 15,
+    chapters: [
+      ["Verbal Aptitude", ["Tenses", "Articles", "Adjectives", "Prepositions", "Conjunctions", "Subject-Verb Agreement", "Parts of Speech", "Selecting Words", "Idioms and Phrases", "Reading Comprehension"]],
+      ["Quantitative Aptitude", ["Bar Graph", "Line Graphs", "Pie Chart", "Table Chart", "Ratio and Proportion", "Percentages", "Powers", "Exponents and Logarithms", "Permutations and Combinations", "Series", "Mensuration and Geometry", "Elementary Statistics and Probability"]],
+      ["Analytical Aptitude", ["Statement and Conclusions", "Statement and Assumptions", "Syllogisms", "Verbal Analogies", "Number Series", "Alphanumeric Series"]],
+      ["Spatial Aptitude", ["Translation", "Rotation", "Scaling", "Mirroring", "Assembling", "Grouping", "Paper Folding", "Cutting"]]
+    ]
+  },
+  {
+    id: "sub-eng-math",
     name: "Engineering Mathematics",
     color: "#5b7cfa",
-    targetWeight: 13,
+    targetWeight: 7, // Grouped with Discrete for 13
     chapters: [
       ["Linear Algebra", ["Matrices", "Eigenvalues and eigenvectors", "Systems of linear equations"]],
       ["Calculus", ["Limits and continuity", "Differentiability", "Maxima and minima"]],
@@ -13,73 +25,14 @@ const subjectSpecs = [
     ]
   },
   {
-    id: "sub-dsa",
-    name: "Data Structures & Algorithms",
-    color: "#0f9f8f",
-    targetWeight: 14,
+    id: "sub-discrete-math",
+    name: "Discrete Mathematics",
+    color: "#4f46e5",
+    targetWeight: 6, // Grouped with Eng Math for 13
     chapters: [
-      ["Data Structures", ["Arrays and linked lists", "Stacks and queues", "Trees", "Graphs"]],
-      ["Algorithms", ["Sorting", "Searching", "Greedy algorithms", "Dynamic programming"]]
-    ]
-  },
-  {
-    id: "sub-coa",
-    name: "Computer Organization",
-    color: "#d97706",
-    targetWeight: 9,
-    chapters: [
-      ["Processor Design", ["Instruction formats", "Addressing modes", "Pipelining"]],
-      ["Memory and I/O", ["Cache memory", "Virtual memory", "I/O interfaces"]]
-    ]
-  },
-  {
-    id: "sub-os",
-    name: "Operating Systems",
-    color: "#8b5cf6",
-    targetWeight: 10,
-    chapters: [
-      ["Processes", ["CPU scheduling", "Synchronization", "Deadlocks"]],
-      ["Memory and Files", ["Paging", "Segmentation", "File systems"]]
-    ]
-  },
-  {
-    id: "sub-dbms",
-    name: "DBMS",
-    color: "#e11d48",
-    targetWeight: 8,
-    chapters: [
-      ["Relational Model", ["ER model", "Relational algebra", "SQL"]],
-      ["Transactions", ["Normalization", "Concurrency control", "Recovery"]]
-    ]
-  },
-  {
-    id: "sub-networks",
-    name: "Computer Networks",
-    color: "#0284c7",
-    targetWeight: 8,
-    chapters: [
-      ["Protocol Stack", ["OSI and TCP/IP", "Transport layer", "Routing"]],
-      ["Applications", ["DNS", "HTTP", "Congestion control"]]
-    ]
-  },
-  {
-    id: "sub-toc",
-    name: "Theory of Computation",
-    color: "#7c3aed",
-    targetWeight: 8,
-    chapters: [
-      ["Automata", ["Regular languages", "DFA and NFA", "Context-free grammars"]],
-      ["Computability", ["Turing machines", "Decidability", "Undecidability"]]
-    ]
-  },
-  {
-    id: "sub-compiler",
-    name: "Compiler Design",
-    color: "#c2410c",
-    targetWeight: 5,
-    chapters: [
-      ["Front End", ["Lexical analysis", "Parsing", "Syntax-directed translation"]],
-      ["Back End", ["Intermediate code", "Code optimization", "Runtime environments"]]
+      ["Logic", ["Propositional Logic", "First Order Logic"]],
+      ["Combinatorics", ["Permutations", "Combinations", "Pigeon-hole principle"]],
+      ["Graph Theory", ["Connectivity", "Matching", "Coloring"]]
     ]
   },
   {
@@ -90,6 +43,87 @@ const subjectSpecs = [
     chapters: [
       ["Combinational Logic", ["Boolean algebra", "K-maps", "Combinational circuits"]],
       ["Sequential Logic", ["Flip-flops", "Counters", "State machines"]]
+    ]
+  },
+  {
+    id: "sub-coa",
+    name: "Computer Organization and Architecture",
+    color: "#d97706",
+    targetWeight: 8,
+    chapters: [
+      ["Architecture Basics", ["Floating Point Representation", "Basics of Computer System & Micr", "Instruction & Addressing Modes"]],
+      ["Processor & Control", ["CPU, Data-path & Control Unit", "Pipelining"]],
+      ["Memory & I/O", ["Memory & Cache", "I/O Organization"]]
+    ]
+  },
+  {
+    id: "sub-pds",
+    name: "Programming and Data Structure",
+    color: "#0f9f8f",
+    targetWeight: 15,
+    chapters: [
+      ["Programming in C", ["Functions", "Recursion", "Parameter passing", "Pointers", "Arrays"]],
+      ["Data Structures", ["Linked lists", "Stacks", "Queues", "Trees", "Binary search trees", "Heaps", "Graphs"]]
+    ]
+  },
+  {
+    id: "sub-algo",
+    name: "Algorithms",
+    color: "#059669",
+    targetWeight: 7,
+    chapters: [
+      ["Analysis", ["Asymptotic notation", "Space and time complexity", "Notations"]],
+      ["Design Techniques", ["Searching", "Sorting", "Greedy algorithms", "Dynamic programming", "Divide and conquer"]]
+    ]
+  },
+  {
+    id: "sub-toc",
+    name: "Theory of Computation",
+    color: "#7c3aed",
+    targetWeight: 6,
+    chapters: [
+      ["Automata", ["Regular languages", "DFA and NFA", "Context-free grammars"]],
+      ["Computability", ["Turing machines", "Decidability", "Undecidability"]]
+    ]
+  },
+  {
+    id: "sub-compiler",
+    name: "Compiler Design",
+    color: "#c2410c",
+    targetWeight: 4,
+    chapters: [
+      ["Front End", ["Lexical analysis", "Parsing", "Syntax-directed translation"]],
+      ["Back End", ["Intermediate code", "Code optimization", "Runtime environments"]]
+    ]
+  },
+  {
+    id: "sub-os",
+    name: "Operating System",
+    color: "#8b5cf6",
+    targetWeight: 9,
+    chapters: [
+      ["Process Management", ["Process Management Basics", "CPU Scheduling", "Threads & Multithreading", "Process Synchronization & Deadlock"]],
+      ["Memory & Storage", ["Memory Management", "Virtual Memory", "File System"]]
+    ]
+  },
+  {
+    id: "sub-dbms",
+    name: "Databases",
+    color: "#e11d48",
+    targetWeight: 7,
+    chapters: [
+      ["Relational Model", ["ER model", "Relational algebra", "SQL"]],
+      ["Transactions", ["Normalization", "Concurrency control", "Recovery"]]
+    ]
+  },
+  {
+    id: "sub-networks",
+    name: "Computer Networks",
+    color: "#0284c7",
+    targetWeight: 10,
+    chapters: [
+      ["Protocol Stack", ["OSI and TCP/IP", "Transport layer", "Routing"]],
+      ["Applications", ["DNS", "HTTP", "Congestion control"]]
     ]
   }
 ] as const;
