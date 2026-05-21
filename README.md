@@ -1,7 +1,7 @@
 # 🎓 Study OS
 ### **Enterprise-grade, Offline-first macOS Study Command Center for GATE CS Preparation**
 
-Built as a sleek, highly focused native macOS workstation, **Study OS** is engineered for deep concentration during long-form study blocks. Storing all metrics locally on disk, the system operates with zero cloud latency, zero accounts, and zero distractions.
+Built as a sleek, highly focused native macOS workstation, **Study OS** is engineered for deep concentration during long-form study blocks. Storing all metrics locally , the system operates with zero cloud latency, zero accounts, and zero distractions.
 
 ---
 
