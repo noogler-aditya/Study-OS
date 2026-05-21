@@ -1,4 +1,4 @@
-import { Play, RotateCcw } from "lucide-react";
+import { Play, RotateCcw, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { dueRevisionTopics } from "../lib/revision";
 import { formatShortDate, todayIso } from "../lib/date";
@@ -11,12 +11,16 @@ export function Revision() {
   const chapters = useStudyStore((state) => state.chapters);
   const completeRevision = useStudyStore((state) => state.completeRevision);
   const startTopic = useStudyStore((state) => state.startTopic);
+  const updateTopic = useStudyStore((state) => state.updateTopic);
   const queue = dueRevisionTopics(topics, todayIso());
 
   // State for "Start Revision" form
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjects[0]?.id ?? "");
   const [selectedTopicId, setSelectedTopicId] = useState("");
   const [startDate, setStartDate] = useState(todayIso());
+
+  // State for delete confirmation modal
+  const [topicToDelete, setTopicToDelete] = useState<{ id: string; name: string } | null>(null);
 
   // Topics available for revision start (not-started or learning, not yet in revision cycle)
   const availableTopics = useMemo(() => {
@@ -144,12 +148,53 @@ export function Revision() {
                   <span className={isDue ? "pill warn" : "pill good"}>
                     {isDue ? "Due" : topic.status}
                   </span>
+                  <button
+                    className="icon-button"
+                    title="Remove from schedule"
+                    onClick={() => setTopicToDelete({ id: topic.id, name: topic.name })}
+                    style={{ color: "#9a3412" }}
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               </div>
             );
           })}
         </div>
       </section>
+
+      {topicToDelete && (
+        <div className="modal-overlay" onClick={() => setTopicToDelete(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Remove from Schedule</h3>
+            <p>
+              Are you sure you want to remove <strong>{topicToDelete.name}</strong> from the revision schedule? This will reset its revision progress.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="ghost-button"
+                onClick={() => setTopicToDelete(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="primary-button danger"
+                onClick={() => {
+                  updateTopic(topicToDelete.id, {
+                    nextRevisionOn: undefined,
+                    studiedOn: undefined,
+                    revisionCount: 0,
+                    status: "learning"
+                  });
+                  setTopicToDelete(null);
+                }}
+              >
+                Confirm Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

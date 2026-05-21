@@ -21,6 +21,7 @@ interface StudyStore extends StudyOsData {
   addMockTest: (mock: MockTest) => void;
   addVaultNote: (note: VaultNote) => void;
   deleteVaultNote: (noteId: string) => void;
+  toggleTask: (taskId: string) => void;
   dashboard: () => {
     completionPercent: number;
     dueRevisions: Topic[];
@@ -38,7 +39,10 @@ async function persist(state: StudyStore, set: (partial: Partial<StudyStore>) =>
     chapters: state.chapters,
     topics: state.topics,
     mockTests: state.mockTests,
-    vaultNotes: state.vaultNotes
+    vaultNotes: state.vaultNotes,
+    completedDates: state.completedDates,
+    todayTasksCompleted: state.todayTasksCompleted,
+    lastActiveDate: state.lastActiveDate
   };
 
   set({ saveStatus: "saving", saveError: null });
@@ -65,13 +69,30 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   topics: [],
   mockTests: [],
   vaultNotes: [],
+  completedDates: [],
+  todayTasksCompleted: [],
+  lastActiveDate: "",
 
   setActiveView: (activeView) => set({ activeView }),
 
   hydrate: async () => {
     try {
       const data = await loadStudyOsData();
-      set({ ...data, loading: false });
+      const today = todayIso();
+      const lastActive = data.lastActiveDate || today;
+      let todayTasks = data.todayTasksCompleted || [];
+      
+      if (lastActive !== today) {
+        todayTasks = [];
+      }
+      
+      set({ 
+        ...data, 
+        completedDates: data.completedDates || [],
+        todayTasksCompleted: todayTasks,
+        lastActiveDate: today,
+        loading: false 
+      });
     } catch (error) {
       console.error("[Study OS] Failed to load data:", error);
       set({ loading: false, saveStatus: "error", saveError: "Failed to load study data" });
@@ -81,7 +102,15 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   reset: async () => {
     try {
       const data = await resetStudyOsData();
-      set({ ...data, loading: false, saveStatus: "saved", saveError: null });
+      set({ 
+        ...data, 
+        completedDates: [],
+        todayTasksCompleted: [],
+        lastActiveDate: "",
+        loading: false, 
+        saveStatus: "saved", 
+        saveError: null 
+      });
       setTimeout(() => set({ saveStatus: "idle" }), 1500);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to reset data";
@@ -156,6 +185,44 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   deleteVaultNote: (noteId) => {
     const state = get();
     const next = { ...state, vaultNotes: state.vaultNotes.filter((note) => note.id !== noteId) };
+    set(next);
+    void persist(next as StudyStore, set);
+  },
+
+  toggleTask: (taskId) => {
+    const state = get();
+    const today = todayIso();
+    const lastActive = state.lastActiveDate || today;
+    let todayTasks = state.todayTasksCompleted || [];
+
+    if (lastActive !== today) {
+      todayTasks = [];
+    }
+
+    const isCompleted = todayTasks.includes(taskId);
+    const nextTasks = isCompleted 
+      ? todayTasks.filter((id) => id !== taskId) 
+      : [...todayTasks, taskId];
+
+    const totalTaskIds = ["discrete-math", "pds", "digital", "os", "dbms", "aptitude"];
+    const allCompleted = totalTaskIds.every((id) => nextTasks.includes(id));
+
+    let nextCompletedDates = state.completedDates || [];
+    if (allCompleted) {
+      if (!nextCompletedDates.includes(today)) {
+        nextCompletedDates = [...nextCompletedDates, today];
+      }
+    } else {
+      nextCompletedDates = nextCompletedDates.filter((date) => date !== today);
+    }
+
+    const next = {
+      ...state,
+      lastActiveDate: today,
+      todayTasksCompleted: nextTasks,
+      completedDates: nextCompletedDates
+    };
+
     set(next);
     void persist(next as StudyStore, set);
   },

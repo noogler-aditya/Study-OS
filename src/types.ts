@@ -67,6 +67,9 @@ export interface StudyOsData {
   topics: Topic[];
   mockTests: MockTest[];
   vaultNotes: VaultNote[];
+  completedDates?: string[];
+  todayTasksCompleted?: string[];
+  lastActiveDate?: string;
 }
 
 export interface DashboardSummary {
