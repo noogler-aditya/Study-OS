@@ -1070,3 +1070,430 @@ select {
   box-shadow: 0 0 0 3px rgba(31, 111, 90, 0.15) !important;
 }
 
+/* --- Knowledge Resources (Vault) Modern UI Overhaul --- */
+
+/* Resources Grid Layout */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Premium Resource Card styling */
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  background: #fffdf8;
+  border: 1px solid #e6e0d2;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.resource-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(23, 101, 79, 0.08);
+  border-color: #c9c2b4;
+}
+
+/* Card Header */
+.resource-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+/* Metadata Rows */
+.resource-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Subject Tag with tinted matching backgrounds */
+.subject-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Note Type Badge */
+.type-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #556057;
+  background-color: #f0ede6;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+/* Date Stamp */
+.date-stamp {
+  font-size: 11px;
+  color: #88938a;
+  margin-left: auto;
+}
+
+/* Card Body Content */
+.resource-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #17201b;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.resource-card-body {
+  font-size: 13px;
+  color: #434c46;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+/* Attachment Visual Container */
+.attachment-preview-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eadecb;
+  background-color: #f7f5ed;
+  margin-bottom: 14px;
+  position: relative;
+  cursor: pointer;
+}
+
+.attachment-preview-container img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.attachment-preview-container:hover img {
+  transform: scale(1.05);
+}
+
+.attachment-preview-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(23, 101, 79, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: #fffdf8;
+}
+
+.attachment-preview-container:hover .attachment-preview-overlay {
+  opacity: 1;
+}
+
+/* File Attachment Card Display */
+.file-attachment-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fdfbf7;
+  border: 1px solid #ebdcb9;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  text-decoration: none;
+  color: #17201b;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.file-attachment-badge:hover {
+  background-color: #f7f4ec;
+  border-color: #cbbba0;
+}
+
+.file-attachment-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.file-attachment-name {
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-attachment-size {
+  font-size: 10px;
+  color: #88938a;
+}
+
+/* Quick Filter Pipelines Bar */
+.pipeline-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #e6e0d2;
+}
+
+.pipeline-filter-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a544e;
+  background-color: #f3eee3;
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pipeline-filter-pill:hover {
+  background-color: #eadecf;
+  color: #17201b;
+}
+
+.pipeline-filter-pill.active {
+  background-color: #17654f;
+  color: #fffdf8;
+  box-shadow: 0 4px 10px -2px rgba(23, 101, 79, 0.25);
+}
+
+/* Visual sorting/actions panel controls */
+.pipeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.pipeline-sort-select {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 24px 5px 8px !important;
+  min-width: 130px;
+  background-position: right 6px center !important;
+  background-size: 10px !important;
+  border-radius: 6px !important;
+  height: 28px;
+}
+
+/* Capture Note Premium Upload Area */
+.upload-dashed-card {
+  border: 2px dashed #dcd5c7;
+  background-color: #fffdf8;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.upload-dashed-card:hover {
+  border-color: #17654f;
+  background-color: #f7fcf9;
+}
+
+.upload-dashed-card svg {
+  color: #657169;
+  transition: color 0.15s ease;
+}
+
+.upload-dashed-card:hover svg {
+  color: #17654f;
+}
+
+.upload-dashed-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #17201b;
+}
+
+.upload-dashed-subtext {
+  font-size: 10px;
+  color: #88938a;
+}
+
+/* Upload Active State Preview */
+.upload-active-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background-color: rgba(23, 101, 79, 0.05);
+  border: 1px solid rgba(23, 101, 79, 0.15);
+  border-radius: 8px;
+  width: 100%;
+}
+
+.upload-active-thumbnail {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #ebdcb9;
+}
+
+.upload-active-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.upload-active-name {
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-active-size {
+  font-size: 9px;
+  color: #657169;
+}
+
+/* Card Actions Foot */
+.resource-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  border-top: 1px solid #f0ede6;
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+/* Copy Action Button Feedback styling */
+.copy-feedback-toast {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #17654f;
+  color: #fffdf8;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.copy-feedback-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fullscreen Glassmorphic Lightbox */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: rgba(23, 32, 27, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: lightbox-fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fffdf8;
+  border: 1px solid #ebdcb9;
+  animation: lightbox-scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.lightbox-caption {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #17201b;
+  background-color: #fbf9f3;
+  border-top: 1px solid #e6e0d2;
+  text-align: center;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid #ebdcb9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #17201b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.lightbox-close-btn:hover {
+  background-color: #fffdf8;
+  color: #b91c1c;
+  transform: scale(1.08);
+}
+
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lightbox-scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+

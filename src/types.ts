@@ -57,6 +57,12 @@ export interface VaultNote {
   subjectId?: string;
   topicId?: string;
   mockTestId?: string;
+  attachment?: {
+    name: string;
+    type: string;
+    size: string;
+    dataUrl: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
