@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { mockTrend } from "../lib/analytics";
 import { todayIso } from "../lib/date";
 import { useStudyStore } from "../stores/studyStore";
+import { CustomSelect } from "./CustomSelect";
 
 export function Mocks() {
   const mockTests = useStudyStore((state) => state.mockTests);
@@ -16,6 +17,10 @@ export function Mocks() {
   const [timeIssues, setTimeIssues] = useState(0);
   const [notes, setNotes] = useState("");
   const [weakSubjectId, setWeakSubjectId] = useState(subjects[0]?.id ?? "");
+
+  const subjectOptions = useMemo(() => {
+    return subjects.map((sub) => ({ value: sub.id, label: sub.name }));
+  }, [subjects]);
 
   const resetForm = () => {
     setName("");
@@ -97,9 +102,14 @@ export function Mocks() {
               <label className="muted" style={{ fontSize: 12 }}>Attempted</label>
               <input type="number" min="0" value={attempted} onChange={(event) => setAttempted(Number(event.target.value))} />
             </div>
-            <select value={weakSubjectId} onChange={(event) => setWeakSubjectId(event.target.value)}>
-              {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-            </select>
+            <div>
+              <label className="muted" style={{ fontSize: 12 }}>Identify Focus Subject</label>
+              <CustomSelect 
+                value={weakSubjectId} 
+                onChange={setWeakSubjectId} 
+                options={subjectOptions} 
+              />
+            </div>
           </div>
           <div className="form-row">
             <div>

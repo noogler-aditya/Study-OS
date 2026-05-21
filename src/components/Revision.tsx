@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { dueRevisionTopics } from "../lib/revision";
 import { formatShortDate, todayIso } from "../lib/date";
 import { useStudyStore } from "../stores/studyStore";
+import { CustomSelect } from "./CustomSelect";
 import type { Confidence } from "../types";
 
 export function Revision() {
@@ -36,6 +37,15 @@ export function Revision() {
       .sort((a, b) => (a.nextRevisionOn ?? "").localeCompare(b.nextRevisionOn ?? ""));
   }, [topics]);
 
+  const subjectOptions = useMemo(() => {
+    return subjects.map((s) => ({ value: s.id, label: s.name }));
+  }, [subjects]);
+
+  const topicOptions = useMemo(() => {
+    const list = availableTopics.map((t) => ({ value: t.id, label: `${t.name} (${t.status})` }));
+    return [{ value: "", label: "Select a topic" }, ...list];
+  }, [availableTopics]);
+
   const subjectName = (subjectId: string) => subjects.find((s) => s.id === subjectId)?.name ?? "Subject";
 
   const handleStartRevision = () => {
@@ -59,28 +69,20 @@ export function Revision() {
             Pick a topic you've studied and schedule its first revision.
           </p>
           <div className="form">
-            <select
-              value={selectedSubjectId}
-              onChange={(e) => {
-                setSelectedSubjectId(e.target.value);
+            <CustomSelect 
+              value={selectedSubjectId} 
+              onChange={(value) => {
+                setSelectedSubjectId(value);
                 setSelectedTopicId("");
               }}
-            >
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
-            <select
-              value={selectedTopicId}
-              onChange={(e) => setSelectedTopicId(e.target.value)}
-            >
-              <option value="">Select a topic</option>
-              {availableTopics.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} ({t.status})
-                </option>
-              ))}
-            </select>
+              options={subjectOptions}
+            />
+            <CustomSelect 
+              value={selectedTopicId} 
+              onChange={setSelectedTopicId}
+              options={topicOptions}
+              placeholder="Select a topic"
+            />
             <input 
               type="date"
               value={startDate}

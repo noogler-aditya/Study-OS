@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { todayIso } from "../lib/date";
 import { useStudyStore } from "../stores/studyStore";
 import type { VaultNoteType } from "../types";
+import { CustomSelect } from "./CustomSelect";
 
 const noteTypes: VaultNoteType[] = ["formula", "mistake", "insight", "revision-summary", "forgotten-concept"];
 
@@ -17,6 +18,10 @@ export function Vault() {
   const [type, setType] = useState<VaultNoteType>("mistake");
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
 
+  const subjectOptions = useMemo(() => {
+    return subjects.map((sub) => ({ value: sub.id, label: sub.name }));
+  }, [subjects]);
+
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return notes;
@@ -27,13 +32,13 @@ export function Vault() {
     <div className="grid two">
       <section className="panel">
         <div className="panel-header">
-          <h3>Knowledge Vault</h3>
+          <h3>Knowledge Resources</h3>
           <Search size={18} />
         </div>
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search formulas, mistakes, forgotten concepts" />
         <div className="list" style={{ marginTop: 12 }}>
           {filtered.length === 0 ? (
-            <div className="empty">{query ? "No matching notes." : "No vault notes yet."}</div>
+            <div className="empty">{query ? "No matching notes." : "No resource notes yet."}</div>
           ) : filtered.map((note) => (
             <div className="row" key={note.id}>
               <div>
@@ -79,12 +84,16 @@ export function Vault() {
         >
           <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Mistake pattern or formula name" />
           <div className="form-row">
-            <select value={type} onChange={(event) => setType(event.target.value as VaultNoteType)}>
-              {noteTypes.map((item) => <option key={item} value={item}>{item}</option>)}
-            </select>
-            <select value={subjectId} onChange={(event) => setSubjectId(event.target.value)}>
-              {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-            </select>
+            <CustomSelect 
+              value={type} 
+              onChange={(value) => setType(value as VaultNoteType)} 
+              options={noteTypes} 
+            />
+            <CustomSelect 
+              value={subjectId} 
+              onChange={setSubjectId} 
+              options={subjectOptions} 
+            />
           </div>
           <textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder="Keep it short enough to revise fast." />
           <button className="primary-button" type="submit">Save Note</button>

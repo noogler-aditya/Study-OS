@@ -7,7 +7,7 @@ const views = [
   { id: "syllabus", label: "Syllabus", icon: BookOpen, subtitle: "Completion and mastery" },
   { id: "revision", label: "Revision", icon: RotateCcw, subtitle: "Due topics and recall" },
   { id: "mocks", label: "Mocks", icon: BarChart3, subtitle: "Analysis loops" },
-  { id: "vault", label: "Vault", icon: Library, subtitle: "Mistakes and formulas" },
+  { id: "vault", label: "Resources", icon: Library, subtitle: "Mistakes and formulas" },
   { id: "settings", label: "Settings", icon: Settings, subtitle: "Local data controls" }
 ];
 

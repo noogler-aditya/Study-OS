@@ -24,7 +24,7 @@ export function Settings() {
           <div className="row"><strong>Subjects</strong><span className="pill">{subjects}</span></div>
           <div className="row"><strong>Topics</strong><span className="pill">{topics}</span></div>
           <div className="row"><strong>Mock analyses</strong><span className="pill">{mocks}</span></div>
-          <div className="row"><strong>Vault notes</strong><span className="pill">{notes}</span></div>
+          <div className="row"><strong>Resource notes</strong><span className="pill">{notes}</span></div>
         </div>
       </section>
       <section className="panel">

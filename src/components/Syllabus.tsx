@@ -3,8 +3,9 @@ import { useState } from "react";
 import { revisionHealth } from "../lib/analytics";
 import { useStudyStore } from "../stores/studyStore";
 import type { TopicStatus } from "../types";
+import { CustomSelect } from "./CustomSelect";
 
-const statuses: TopicStatus[] = ["not-started", "learning", "completed", "revising", "weak", "mastered"];
+const statuses: TopicStatus[] = ["not-started", "learning", "completed", "revising"];
 
 const clusters = [
   {
@@ -84,16 +85,12 @@ export function Syllabus() {
                       <div className="muted">PYQs {topic.pyqSolved}/{topic.pyqTotal} · mastery {topic.mastery}%</div>
                     </div>
                   </div>
-                  <select
+                  <CustomSelect
                     className="status-select"
                     value={topic.status}
-                    onChange={(event) => {
-                      const status = event.target.value as TopicStatus;
-                      updateTopic(topic.id, { status });
-                    }}
-                  >
-                    {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
-                  </select>
+                    onChange={(value) => updateTopic(topic.id, { status: value as TopicStatus })}
+                    options={statuses}
+                  />
                 </div>
               ))}
             </div>
