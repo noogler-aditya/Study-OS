@@ -168,7 +168,6 @@ export function createSeedData(): StudyOsData {
     subjects,
     chapters,
     topics,
-    studyBlocks: [],
     mockTests: [],
     vaultNotes: []
   };

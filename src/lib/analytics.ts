@@ -1,4 +1,4 @@
-import type { MockTest, StudyBlock, Topic } from "../types";
+import type { MockTest, Topic } from "../types";
 import { isDue, todayIso } from "./date";
 
 export function completionPercent(topics: Topic[]): number {
@@ -27,13 +27,3 @@ export function mockTrend(mockTests: MockTest[]): number {
   return Math.round((latest.score / latest.maxScore - previous.score / previous.maxScore) * 100);
 }
 
-export function dailyStreak(blocks: StudyBlock[], referenceIso = todayIso()): number {
-  const completedDates = new Set(blocks.filter((block) => block.completed).map((block) => block.date));
-  let streak = 0;
-  const cursor = new Date(`${referenceIso}T00:00:00`);
-  while (completedDates.has(cursor.toISOString().slice(0, 10))) {
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
-}

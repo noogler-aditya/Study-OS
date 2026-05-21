@@ -46,7 +46,6 @@ export function Syllabus() {
   const chapters = useStudyStore((state) => state.chapters);
   const topics = useStudyStore((state) => state.topics);
   const updateTopic = useStudyStore((state) => state.updateTopic);
-  const startTopic = useStudyStore((state) => state.startTopic);
 
   const [selectedClusterId, setSelectedClusterId] = useState<string | null>(null);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
@@ -90,8 +89,7 @@ export function Syllabus() {
                     value={topic.status}
                     onChange={(event) => {
                       const status = event.target.value as TopicStatus;
-                      if (status === "learning" && !topic.studiedOn) startTopic(topic.id);
-                      else updateTopic(topic.id, { status });
+                      updateTopic(topic.id, { status });
                     }}
                   >
                     {statuses.map((status) => <option key={status} value={status}>{status}</option>)}

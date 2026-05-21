@@ -5,7 +5,6 @@ export function Settings() {
   const topics = useStudyStore((state) => state.topics.length);
   const mocks = useStudyStore((state) => state.mockTests.length);
   const notes = useStudyStore((state) => state.vaultNotes.length);
-  const blocks = useStudyStore((state) => state.studyBlocks.length);
   const reset = useStudyStore((state) => state.reset);
 
   const handleReset = () => {
@@ -24,7 +23,6 @@ export function Settings() {
         <div className="list">
           <div className="row"><strong>Subjects</strong><span className="pill">{subjects}</span></div>
           <div className="row"><strong>Topics</strong><span className="pill">{topics}</span></div>
-          <div className="row"><strong>Study blocks</strong><span className="pill">{blocks}</span></div>
           <div className="row"><strong>Mock analyses</strong><span className="pill">{mocks}</span></div>
           <div className="row"><strong>Vault notes</strong><span className="pill">{notes}</span></div>
         </div>

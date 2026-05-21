@@ -3,7 +3,6 @@ import { AppShell } from "./components/AppShell";
 import { Dashboard } from "./components/Dashboard";
 import { Mocks } from "./components/Mocks";
 import { Revision } from "./components/Revision";
-import { Scheduler } from "./components/Scheduler";
 import { Settings } from "./components/Settings";
 import { Syllabus } from "./components/Syllabus";
 import { Vault } from "./components/Vault";
@@ -27,7 +26,6 @@ export function App() {
       {activeView === "dashboard" && <Dashboard />}
       {activeView === "syllabus" && <Syllabus />}
       {activeView === "revision" && <Revision />}
-      {activeView === "scheduler" && <Scheduler />}
       {activeView === "mocks" && <Mocks />}
       {activeView === "vault" && <Vault />}
       {activeView === "settings" && <Settings />}

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import type { Confidence, MockTest, StudyBlock, StudyOsData, Topic, TopicStatus, VaultNote } from "../types";
-import { completionPercent, dailyStreak, weakTopics } from "../lib/analytics";
+import type { Confidence, MockTest, StudyOsData, Topic, TopicStatus, VaultNote } from "../types";
+import { completionPercent, weakTopics } from "../lib/analytics";
 import { dueRevisionTopics, completeRevision as completeRevisionTopic, nextRevisionDate } from "../lib/revision";
 import { loadStudyOsData, resetStudyOsData, saveStudyOsData } from "../lib/storage";
 import { todayIso } from "../lib/date";
@@ -16,12 +16,8 @@ interface StudyStore extends StudyOsData {
   hydrate: () => Promise<void>;
   reset: () => Promise<void>;
   updateTopic: (topicId: string, patch: Partial<Topic>) => void;
-  startTopic: (topicId: string, confidence?: Confidence) => void;
+  startTopic: (topicId: string, confidence?: Confidence, manualDate?: string) => void;
   completeRevision: (topicId: string, confidence: Confidence, forgotten: boolean) => void;
-  upsertStudyBlock: (block: StudyBlock) => void;
-  updateStudyBlock: (blockId: string, patch: Partial<StudyBlock>) => void;
-  toggleStudyBlock: (blockId: string) => void;
-  deleteStudyBlock: (blockId: string) => void;
   addMockTest: (mock: MockTest) => void;
   addVaultNote: (note: VaultNote) => void;
   deleteVaultNote: (noteId: string) => void;
@@ -29,9 +25,6 @@ interface StudyStore extends StudyOsData {
     completionPercent: number;
     dueRevisions: Topic[];
     weakTopics: Topic[];
-    todayBlocks: StudyBlock[];
-    upcomingMocks: StudyBlock[];
-    streakDays: number;
   };
 }
 
@@ -44,7 +37,6 @@ async function persist(state: StudyStore, set: (partial: Partial<StudyStore>) =>
     subjects: state.subjects,
     chapters: state.chapters,
     topics: state.topics,
-    studyBlocks: state.studyBlocks,
     mockTests: state.mockTests,
     vaultNotes: state.vaultNotes
   };
@@ -71,7 +63,6 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   subjects: [],
   chapters: [],
   topics: [],
-  studyBlocks: [],
   mockTests: [],
   vaultNotes: [],
 
@@ -105,13 +96,13 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
     void persist(next as StudyStore, set);
   },
 
-  startTopic: (topicId, confidence = "medium") => {
+  startTopic: (topicId, confidence = "medium", manualDate) => {
     const state = get();
     const today = todayIso();
     const topic = state.topics.find((t) => t.id === topicId);
     if (!topic) return;
 
-    const revisionDate = nextRevisionDate(today, confidence, topic.revisionCount);
+    const revisionDate = manualDate || nextRevisionDate(today, confidence, topic.revisionCount);
     const next = {
       ...state,
       topics: state.topics.map((t) =>
@@ -147,35 +138,6 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
     void persist(next as StudyStore, set);
   },
 
-  upsertStudyBlock: (block) => {
-    const state = get();
-    const exists = state.studyBlocks.some((item) => item.id === block.id);
-    const next = { ...state, studyBlocks: exists ? state.studyBlocks.map((item) => (item.id === block.id ? block : item)) : [block, ...state.studyBlocks] };
-    set(next);
-    void persist(next as StudyStore, set);
-  },
-
-  updateStudyBlock: (blockId, patch) => {
-    const state = get();
-    const next = { ...state, studyBlocks: state.studyBlocks.map((block) => (block.id === blockId ? { ...block, ...patch } : block)) };
-    set(next);
-    void persist(next as StudyStore, set);
-  },
-
-  toggleStudyBlock: (blockId) => {
-    const state = get();
-    const next = { ...state, studyBlocks: state.studyBlocks.map((block) => (block.id === blockId ? { ...block, completed: !block.completed } : block)) };
-    set(next);
-    void persist(next as StudyStore, set);
-  },
-
-  deleteStudyBlock: (blockId) => {
-    const state = get();
-    const next = { ...state, studyBlocks: state.studyBlocks.filter((block) => block.id !== blockId) };
-    set(next);
-    void persist(next as StudyStore, set);
-  },
-
   addMockTest: (mock) => {
     const state = get();
     const weakTopicsFromSubjects = state.topics.map((topic) => (mock.weakSubjectIds.includes(topic.subjectId) ? { ...topic, status: "weak" as TopicStatus, confidence: "low" as Confidence } : topic));
@@ -204,10 +166,7 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
     return {
       completionPercent: completionPercent(state.topics),
       dueRevisions: dueRevisionTopics(state.topics, today),
-      weakTopics: weakTopics(state.topics),
-      todayBlocks: state.studyBlocks.filter((block) => block.date === today).sort((a, b) => a.start.localeCompare(b.start)),
-      upcomingMocks: state.studyBlocks.filter((block) => block.type === "mock" && block.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3),
-      streakDays: dailyStreak(state.studyBlocks, today)
+      weakTopics: weakTopics(state.topics)
     };
   }
 }));

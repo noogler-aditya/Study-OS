@@ -5,8 +5,6 @@ import { formatShortDate, todayIso } from "../lib/date";
 import { useStudyStore } from "../stores/studyStore";
 import type { Confidence } from "../types";
 
-const confidenceOptions: Confidence[] = ["low", "medium", "high"];
-
 export function Revision() {
   const topics = useStudyStore((state) => state.topics);
   const subjects = useStudyStore((state) => state.subjects);
@@ -18,7 +16,7 @@ export function Revision() {
   // State for "Start Revision" form
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjects[0]?.id ?? "");
   const [selectedTopicId, setSelectedTopicId] = useState("");
-  const [startConfidence, setStartConfidence] = useState<Confidence>("medium");
+  const [startDate, setStartDate] = useState(todayIso());
 
   // Topics available for revision start (not-started or learning, not yet in revision cycle)
   const availableTopics = useMemo(() => {
@@ -38,7 +36,9 @@ export function Revision() {
 
   const handleStartRevision = () => {
     if (!selectedTopicId) return;
-    startTopic(selectedTopicId, startConfidence);
+    const topic = topics.find((t) => t.id === selectedTopicId);
+    const confidence = topic?.confidence ?? "medium";
+    startTopic(selectedTopicId, confidence, startDate);
     setSelectedTopicId("");
   };
 
@@ -52,7 +52,7 @@ export function Revision() {
             <Play size={18} />
           </div>
           <p className="muted" style={{ marginBottom: 10, fontSize: 13 }}>
-            Pick a topic you've studied and add it to your revision schedule.
+            Pick a topic you've studied and schedule its first revision.
           </p>
           <div className="form">
             <select
@@ -77,24 +77,20 @@ export function Revision() {
                 </option>
               ))}
             </select>
-            <div className="form-row">
-              <select
-                value={startConfidence}
-                onChange={(e) => setStartConfidence(e.target.value as Confidence)}
-              >
-                {confidenceOptions.map((c) => (
-                  <option key={c} value={c}>{c} confidence</option>
-                ))}
-              </select>
-              <button
-                className="primary-button"
-                type="button"
-                onClick={handleStartRevision}
-                disabled={!selectedTopicId}
-              >
-                Add to Revision
-              </button>
-            </div>
+            <input 
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              title="Select revision date"
+            />
+            <button
+              className="primary-button"
+              type="button"
+              onClick={handleStartRevision}
+              disabled={!selectedTopicId}
+            >
+              Schedule Revision
+            </button>
           </div>
         </section>
 
@@ -164,8 +160,6 @@ function RevisionRow({ topic, subjectName, onComplete }: {
   subjectName: string;
   onComplete: (topicId: string, confidence: Confidence, forgotten: boolean) => void;
 }) {
-  const [confidence, setConfidence] = useState<Confidence>(topic.confidence);
-
   return (
     <div className="row">
       <div>
@@ -173,10 +167,7 @@ function RevisionRow({ topic, subjectName, onComplete }: {
         <div className="muted">{subjectName} · due {formatShortDate(topic.nextRevisionOn)}</div>
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <select className="status-select" value={confidence} onChange={(e) => setConfidence(e.target.value as Confidence)}>
-          {confidenceOptions.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <button className="primary-button" onClick={() => onComplete(topic.id, confidence, false)}>
+        <button className="primary-button" onClick={() => onComplete(topic.id, topic.confidence, false)}>
           Complete
         </button>
         <button className="ghost-button" onClick={() => onComplete(topic.id, "low", true)}>Forgot</button>

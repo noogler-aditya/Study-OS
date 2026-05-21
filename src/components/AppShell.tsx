@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, CalendarDays, CheckCircle, FlaskConical, Gauge, Library, Loader2, RotateCcw, Settings, XCircle } from "lucide-react";
+import { BarChart3, BookOpen, CheckCircle, FlaskConical, Gauge, Library, Loader2, RotateCcw, Settings, XCircle } from "lucide-react";
 import type React from "react";
 import { useStudyStore } from "../stores/studyStore";
 
@@ -6,7 +6,6 @@ const views = [
   { id: "dashboard", label: "Dashboard", icon: Gauge, subtitle: "Today mission control" },
   { id: "syllabus", label: "Syllabus", icon: BookOpen, subtitle: "Completion and mastery" },
   { id: "revision", label: "Revision", icon: RotateCcw, subtitle: "Due topics and recall" },
-  { id: "scheduler", label: "Scheduler", icon: CalendarDays, subtitle: "Deep work blocks" },
   { id: "mocks", label: "Mocks", icon: BarChart3, subtitle: "Analysis loops" },
   { id: "vault", label: "Vault", icon: Library, subtitle: "Mistakes and formulas" },
   { id: "settings", label: "Settings", icon: Settings, subtitle: "Local data controls" }

@@ -1,7 +1,5 @@
 export type Confidence = "low" | "medium" | "high";
 export type TopicStatus = "not-started" | "learning" | "completed" | "revising" | "weak" | "mastered";
-export type StudyBlockType = "learn" | "revise" | "pyq" | "mock" | "analysis" | "backlog";
-export type EnergyLevel = "peak" | "normal" | "low";
 export type VaultNoteType = "formula" | "mistake" | "insight" | "revision-summary" | "forgotten-concept";
 
 export interface Subject {
@@ -34,18 +32,7 @@ export interface Topic {
   mastery: number;
 }
 
-export interface StudyBlock {
-  id: string;
-  date: string;
-  start: string;
-  end: string;
-  type: StudyBlockType;
-  energy: EnergyLevel;
-  subjectId?: string;
-  topicId?: string;
-  title: string;
-  completed: boolean;
-}
+
 
 export interface MockTest {
   id: string;
@@ -78,7 +65,6 @@ export interface StudyOsData {
   subjects: Subject[];
   chapters: Chapter[];
   topics: Topic[];
-  studyBlocks: StudyBlock[];
   mockTests: MockTest[];
   vaultNotes: VaultNote[];
 }
@@ -87,7 +73,4 @@ export interface DashboardSummary {
   completionPercent: number;
   weakTopics: Topic[];
   dueRevisions: Topic[];
-  todayBlocks: StudyBlock[];
-  upcomingMocks: StudyBlock[];
-  streakDays: number;
 }
