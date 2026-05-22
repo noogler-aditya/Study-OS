@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Confidence, MockTest, StudyOsData, Topic, TopicStatus, VaultNote } from "../types";
+import type { Confidence, MockTest, StudyOsData, Topic, TopicStatus, VaultNote, FocusSession } from "../types";
 import { completionPercent, weakTopics } from "../lib/analytics";
 import { dueRevisionTopics, completeRevision as completeRevisionTopic, nextRevisionDate } from "../lib/revision";
 import { loadStudyOsData, resetStudyOsData, saveStudyOsData } from "../lib/storage";
@@ -27,6 +27,13 @@ interface StudyStore extends StudyOsData {
     dueRevisions: Topic[];
     weakTopics: Topic[];
   };
+  focusSession: FocusSession | null;
+  startFocusSession: (taskId: string, subjectName: string, durationMinutes: number) => void;
+  pauseFocusSession: () => void;
+  resumeFocusSession: () => void;
+  tickFocusSession: () => void;
+  cancelFocusSession: () => void;
+  clearCompletedFocusSession: () => void;
 }
 
 /**
@@ -72,6 +79,7 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
   completedDates: [],
   todayTasksCompleted: [],
   lastActiveDate: "",
+  focusSession: null,
 
   setActiveView: (activeView) => set({ activeView }),
 
@@ -235,5 +243,74 @@ export const useStudyStore = create<StudyStore>((set, get) => ({
       dueRevisions: dueRevisionTopics(state.topics, today),
       weakTopics: weakTopics(state.topics)
     };
+  },
+
+  startFocusSession: (taskId, subjectName, durationMinutes) => {
+    set({
+      focusSession: {
+        taskId,
+        subjectName,
+        durationMinutes,
+        timeLeftSeconds: durationMinutes * 60,
+        status: "running"
+      }
+    });
+  },
+
+  pauseFocusSession: () => {
+    const session = get().focusSession;
+    if (!session) return;
+    set({
+      focusSession: {
+        ...session,
+        status: "paused"
+      }
+    });
+  },
+
+  resumeFocusSession: () => {
+    const session = get().focusSession;
+    if (!session) return;
+    set({
+      focusSession: {
+        ...session,
+        status: "running"
+      }
+    });
+  },
+
+  tickFocusSession: () => {
+    const session = get().focusSession;
+    if (!session || session.status !== "running") return;
+    const nextSeconds = session.timeLeftSeconds - 1;
+    if (nextSeconds <= 0) {
+      set({
+        focusSession: {
+          ...session,
+          timeLeftSeconds: 0,
+          status: "completed"
+        }
+      });
+      // Automatically check the checklist task if it wasn't already checked!
+      const todayTasks = get().todayTasksCompleted || [];
+      if (!todayTasks.includes(session.taskId)) {
+        get().toggleTask(session.taskId);
+      }
+    } else {
+      set({
+        focusSession: {
+          ...session,
+          timeLeftSeconds: nextSeconds
+        }
+      });
+    }
+  },
+
+  cancelFocusSession: () => {
+    set({ focusSession: null });
+  },
+
+  clearCompletedFocusSession: () => {
+    set({ focusSession: null });
   }
 }));

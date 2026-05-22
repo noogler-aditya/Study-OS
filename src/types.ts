@@ -83,3 +83,11 @@ export interface DashboardSummary {
   weakTopics: Topic[];
   dueRevisions: Topic[];
 }
+
+export interface FocusSession {
+  taskId: string;
+  subjectName: string;
+  durationMinutes: number;
+  timeLeftSeconds: number;
+  status: "idle" | "running" | "paused" | "completed";
+}
